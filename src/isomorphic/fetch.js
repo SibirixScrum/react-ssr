@@ -44,9 +44,9 @@ class FaceResponse {
 /**
  * @param url
  * @param options
- * @return {*}
+ * @return {Promise<Response|SyncPromise>}
  */
-export function fetch(url, options = {}) {
+export function isomorphicFetch(url, options = {}) {
     if (isServerPlatform()) {
         const request = require('sync-request');
 
