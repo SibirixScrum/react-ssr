@@ -27,7 +27,7 @@ const serverRenderer = (req, res) => {
 };
 
 app.use('/build', express.static('build'));
-app.use('/assets', express.static('assets'));
+
 router.use('^/$', serverRenderer);
 
 router.use(
