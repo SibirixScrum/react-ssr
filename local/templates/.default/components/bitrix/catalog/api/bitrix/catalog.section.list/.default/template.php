@@ -11,4 +11,6 @@
 /** @var string $componentPath */
 /** @var CBitrixComponent $component */
 
-echo json_encode($arResult['SECTIONS']);
+echo json_encode([
+    'items' => $arResult['SECTIONS'],
+]);

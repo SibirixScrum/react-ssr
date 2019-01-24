@@ -11,6 +11,14 @@
 /** @var string $componentPath */
 /** @var CBitrixComponent $component */
 
+/** @var CIBlockResult $navResult */
+$navResult = $arResult['NAV_RESULT'];
 
-
-echo json_encode($arResult['ITEMS']);
+echo json_encode([
+    'items' => $arResult['ITEMS'],
+    'navParams' => [
+        'totalCount' => $navResult->NavRecordCount,
+        'size' => $navResult->NavPageSize,
+        'page' => $navResult->NavPageNomer,
+    ],
+]);
