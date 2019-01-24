@@ -18,7 +18,7 @@ const serverRenderer = (req, res) => {
             return res.status(500).send('An error occurred');
         }
 
-        //return res.send(data);
+        return res.send(data);
         return res.send(
             data
                 .replace(
@@ -34,6 +34,7 @@ const serverRenderer = (req, res) => {
 };
 
 app.use('/build', express.static('build'));
+app.use('/assets', express.static('assets'));
 
 router.use('**', serverRenderer);
 

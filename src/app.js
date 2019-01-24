@@ -10,11 +10,11 @@ export class App extends IsomorphicComponent {
 
     render() {
         const routes = (
-            <div>
+            <main id="main">
                 <Route path={'/'} exact component={SectionListComponent} />
                 <Route path={'/:sectionCode'} exact component={ElementListComponent} />
                 <Route path={'/:sectionCode/:elementCode'} exact component={DetailComponent} />
-            </div>
+            </main>
         );
 
         if (isServerPlatform()) {

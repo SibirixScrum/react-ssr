@@ -6,6 +6,9 @@ export function isServerPlatform() {
     return typeof window === 'undefined';
 }
 
+/**
+ *
+ */
 export class SyncPromise {
     constructor(data) {
         this.data = data;
@@ -17,8 +20,10 @@ export class SyncPromise {
     }
 }
 
+/**
+ *
+ */
 class FaceResponse {
-
     constructor(response) {
         this.response = response;
     }
