@@ -4,7 +4,7 @@ import fs from 'fs';
 
 import express from 'express';
 
-import {serverRenderer as serverRendererApp} from './src/server';
+import {serverRenderer as serverRendererApp, ServerState} from './src/server';
 
 const PORT = 8080;
 const app = express();
@@ -17,18 +17,25 @@ const serverRenderer = (req, res) => {
             console.error(err);
             return res.status(500).send('An error occurred');
         }
+
+        //return res.send(data);
         return res.send(
-            data.replace(
-                '<div id="root"></div>',
-                '<div id="root">' + serverRendererApp() + '</div>'
-            )
+            data
+                .replace(
+                    '<div id="root"></div>',
+                    '<div id="root">' + serverRendererApp(req) + '</div>'
+                )
+                .replace(
+                    '<title></title>',
+                    `<title>${ServerState.getInstance().title}</title>`
+                )
         )
     })
 };
 
 app.use('/build', express.static('build'));
 
-router.use('^/$', serverRenderer);
+router.use('**', serverRenderer);
 
 router.use(
     express.static(path.resolve(__dirname, '..', 'build'), { maxAge: '30d' })

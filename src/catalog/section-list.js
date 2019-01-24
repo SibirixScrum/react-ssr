@@ -21,7 +21,7 @@ export class SectionListComponent extends IsomorphicComponent {
         isomorphicFetch('http://react-rss.api/catalog/').then((data) => {
             data.json().then((data) => {
                 return this.setState({
-                    items: data,
+                    items: data.items,
                 });
             });
         });

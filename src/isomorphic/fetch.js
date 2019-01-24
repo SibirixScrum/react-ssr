@@ -1,4 +1,4 @@
-export function isClientPlatform() {
+export function isBrowserPlatform() {
     return typeof window !== 'undefined';
 }
 

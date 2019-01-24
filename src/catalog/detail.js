@@ -1,6 +1,7 @@
 import React from "react";
 import {IsomorphicComponent} from "../isomorphic/component";
 import {isomorphicFetch, isServerPlatform} from "../isomorphic/fetch";
+import {ServerState} from "../server";
 
 export class DetailComponent extends IsomorphicComponent {
 
@@ -20,6 +21,13 @@ export class DetailComponent extends IsomorphicComponent {
     componentDidMount() {
         isomorphicFetch(`http://react-rss.api/catalog/element/${this.getElementCode()}/`).then((data) => {
             data.json().then((data) => {
+
+                if (isServerPlatform()) {
+                    ServerState.getInstance().title = data.NAME;
+                } else {
+                    document.title = data.NAME;
+                }
+
                 return this.setState({
                     item: data,
                 });
