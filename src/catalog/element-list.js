@@ -2,6 +2,7 @@ import React from "react";
 import {Link} from "react-router-dom";
 import {IsomorphicComponent} from "../isomorphic/component";
 import {isBrowserPlatform, isomorphicFetch, isServerPlatform} from "../isomorphic/fetch";
+import {ServerState} from "../server";
 import {PaginatorComponent} from "./paginator";
 
 export class ElementListComponent extends IsomorphicComponent {
@@ -15,6 +16,12 @@ export class ElementListComponent extends IsomorphicComponent {
 
         if (isServerPlatform()) {
             this.componentDidMount();
+        }
+
+        if (isServerPlatform()) {
+            ServerState.getInstance().title = 'Список товаров';
+        } else {
+            document.title = 'Список товаров';
         }
     }
 

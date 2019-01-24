@@ -2,6 +2,7 @@ import React from "react";
 import {Link} from "react-router-dom";
 import {IsomorphicComponent} from "../isomorphic/component";
 import {isomorphicFetch, isServerPlatform} from "../isomorphic/fetch";
+import {ServerState} from "../server";
 
 export class SectionListComponent extends IsomorphicComponent {
 
@@ -14,6 +15,12 @@ export class SectionListComponent extends IsomorphicComponent {
 
         if (isServerPlatform()) {
             this.componentDidMount();
+        }
+
+        if (isServerPlatform()) {
+            ServerState.getInstance().title = 'Список разделов';
+        } else {
+            document.title = 'Список разделов';
         }
     }
 
