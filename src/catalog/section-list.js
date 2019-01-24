@@ -25,8 +25,9 @@ export class SectionListComponent extends IsomorphicComponent {
     }
 
     componentDidMount() {
-        isomorphicFetch('http://react-rss.api/catalog/').then((data) => {
+        isomorphicFetch('http://olehouse.local/catalog-api/').then((data) => {
             data.json().then((data) => {
+                console.log(data);
                 return this.setState({
                     items: data.items,
                 });
@@ -52,29 +53,38 @@ export class SectionListComponent extends IsomorphicComponent {
                 <div className="slider-special catalog-section-list" style={{opacity: 1}}>
                     <div className="container">
                         <div className="slide-list grid-row  gutter-0">
-                            <a href="javascript:void(0);" className="col-xs-6 col-sm-6 col-md-6 col-lg-6 slide colored">
-                                <span className="slide-content" style={{backgroundColor: '#bfb1c3'}}>
-                                    <span className="slide-content-text">
-                                        <span className="slide-title">Базы и топы</span>
-                                        <span
-                                            className="slide-text">Каучуковые, вельветовые, матовые, ультраглянцевые, с&nbsp;блестками и&nbsp;т.д.</span>
-                                    </span>
-                                    <span className="slide-content-img">
-                                        <img src="/assets/pictures/main/hand.png" alt="" />
-                                    </span>
-                                </span>
-                            </a>
-                            <a href="javascript:void(0);" className="col-xs-6 col-sm-6 col-md-6 col-lg-6 slide ">
-                                <span className="slide-content">
-                                    <span className="slide-content-text">
-                                        <span className="slide-title">Уход за ногтями</span>
-                                        <span className="slide-text">Крема, натуральные масла&nbsp;— все&nbsp;то, что так необходимо для ухода за&nbsp;кожей рук</span>
-                                    </span>
-                                    <span className="slide-content-img">
-                                        <img src="/assets/pictures/main/special-product-10.png" alt="" />
-                                    </span>
-                                </span>
-                            </a>
+                            {this.state.items ? (
+                                this.state.items.map((item, index) => {
+                                    const style = {};
+
+                                    if (item.UF_COLOR && item.UF_COLOR !== '#ffffff') {
+                                        style.backgroundColor = item.UF_COLOR;
+                                    }
+
+                                    if (item.UF_COLOR_TEXT) {
+                                        style.color = item.UF_COLOR_TEXT
+                                    }
+
+                                    return (
+                                        <Link to={item.CODE}
+                                           className={`col-xs-6 col-sm-6 col-md-6 col-lg-6 slide ${parseInt(item.UF_BIG_PICTURE, 10) === 1 ? 'colored' : ''}`}
+                                            key={index}>
+                                            <span className="slide-content" style={style}>
+                                                <span className="slide-content-text">
+                                                    <span className="slide-title">{item.NAME}</span>
+                                                    <span
+                                                        className="slide-text">{item.DESCRIPTION}</span>
+                                                </span>
+                                                {item.PICTURE_RESIZE ? (
+                                                    <span className="slide-content-img">
+                                                        <img src={`http://olehouse.local/${item.PICTURE_RESIZE}`} alt="" />
+                                                    </span>
+                                                ): ''}
+                                            </span>
+                                        </Link>
+                                    );
+                                })
+                            ): ''}
                         </div>
                     </div>
                 </div>
