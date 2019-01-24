@@ -1,5 +1,5 @@
 .idea/
-api/
-node_modules/
-build/
-package-lock.json
+/api/
+/node_modules/
+/build/
+/package-lock.json
