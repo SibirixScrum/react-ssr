@@ -7,16 +7,3 @@ export function serverRenderer(req) {
         url: req.originalUrl
     }} />);
 }
-
-export class ServerState {
-
-    /**
-     * @return {ServerState}
-     */
-    static getInstance() {
-        if (typeof ServerState._instance === 'undefined') {
-            ServerState._instance = new ServerState();
-        }
-        return ServerState._instance;
-    }
-}

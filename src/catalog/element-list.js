@@ -2,7 +2,7 @@ import React from "react";
 import {Link} from "react-router-dom";
 import {IsomorphicComponent} from "../isomorphic/component";
 import {isBrowserPlatform, isomorphicFetch, isServerPlatform} from "../isomorphic/fetch";
-import {ServerState} from "../server";
+import {HtmlHead} from "../isomorphic/html-head";
 import {PaginatorComponent} from "./paginator";
 
 export class ElementListComponent extends IsomorphicComponent {
@@ -21,18 +21,18 @@ export class ElementListComponent extends IsomorphicComponent {
             this.componentDidMount();
         }
 
-        if (isServerPlatform()) {
-            ServerState.getInstance().title = 'Список товаров';
-        } else {
-            document.title = 'Список товаров';
-        }
     }
 
     componentDidMount() {
         this.loadPage(this.getPageNumber(this.props.location));
 
         if (isBrowserPlatform()) {
-            this.props.history.listen((location) => {
+            this.unlisten = this.props.history.listen((location) => {
+                //
+                if (this.props.history.location.pathname !== this.props.location.pathname) {
+                    return;
+                }
+
                 this.setState({
                     items: null,
                     navParams: null,
@@ -40,6 +40,12 @@ export class ElementListComponent extends IsomorphicComponent {
                 });
                 this.loadPage(this.getPageNumber(location));
             });
+        }
+    }
+
+    componentWillUnmount() {
+        if (this.unlisten) {
+            this.unlisten();
         }
     }
 
@@ -57,13 +63,15 @@ export class ElementListComponent extends IsomorphicComponent {
             page = 1;
         }
 
-        return isomorphicFetch(`http://olehouse.local/catalog-api/section/${this.getSectionCode()}/?PAGEN_1=${page}`)
+        isomorphicFetch(`http://olehouse.local/catalog-api/section/${this.getSectionCode()}/?PAGEN_1=${page}`)
             .then((data) => {
                     if (!data.ok) {
                         return;
                     }
 
                     data.json().then((data) => {
+                        HtmlHead.title = data.section.NAME;
+
                         return this.setState({
                             section: data.section,
                             items: data.items,

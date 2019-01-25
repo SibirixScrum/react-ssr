@@ -2,7 +2,8 @@ import React from "react";
 import {Link} from "react-router-dom";
 import {IsomorphicComponent} from "../isomorphic/component";
 import {isomorphicFetch, isServerPlatform} from "../isomorphic/fetch";
-import {ServerState} from "../server";
+import {HtmlHead} from "../isomorphic/html-head";
+
 
 export class SectionListComponent extends IsomorphicComponent {
 
@@ -18,11 +19,7 @@ export class SectionListComponent extends IsomorphicComponent {
             this.componentDidMount();
         }
 
-        if (isServerPlatform()) {
-            ServerState.getInstance().title = 'Список разделов';
-        } else {
-            document.title = 'Список разделов';
-        }
+        HtmlHead.title = 'Каталог';
     }
 
     componentDidMount() {

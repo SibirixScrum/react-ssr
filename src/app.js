@@ -1,5 +1,5 @@
 import React from "react";
-import {BrowserRouter, Route, StaticRouter} from "react-router-dom";
+import {BrowserRouter, Route, StaticRouter, Switch} from "react-router-dom";
 import {DetailComponent} from "./catalog/detail";
 import {ElementListComponent} from "./catalog/element-list";
 import {SectionListComponent} from "./catalog/section-list";
@@ -11,9 +11,11 @@ export class App extends IsomorphicComponent {
     render() {
         const routes = (
             <main id="main" style={{padding: 0}}>
-                <Route path={'/'} exact component={SectionListComponent} />
-                <Route path={'/:sectionCode'} exact component={ElementListComponent} />
-                <Route path={'/:sectionCode/:elementCode'} exact component={DetailComponent} />
+                <Switch>
+                    <Route path={'/'} exact component={SectionListComponent} />
+                    <Route path={'/:sectionCode'} exact component={ElementListComponent} />
+                    <Route path={'/:sectionCode/:elementCode'} component={DetailComponent} />
+                </Switch>
             </main>
         );
 

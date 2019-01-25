@@ -1,10 +1,10 @@
 import 'isomorphic-fetch';
 import path from 'path';
-import fs from 'fs';
 
 import express from 'express';
 
-import {serverRenderer as serverRendererApp, ServerState} from './src/server';
+import {serverRenderer as serverRendererApp} from './src/server';
+import {template} from "./src/template";
 
 const PORT = 8080;
 const app = express();
@@ -12,21 +12,7 @@ const app = express();
 const router = express.Router();
 
 const serverRenderer = (req, res) => {
-    fs.readFile(path.resolve('./index.html'), 'utf8', (err, data) => {
-        if (err) {
-            console.error(err);
-            return res.status(500).send('An error occurred');
-        };
-
-        //return res.send(data);
-        return res.send(
-            data
-                .replace(
-                    '<div id="root" class="flex-grow"></div>',
-                    '<div id="root" class="flex-grow">' + serverRendererApp(req) + '</div>'
-                )
-        )
-    })
+    res.send(template(serverRendererApp(req)));
 };
 
 app.use('/build', express.static('build'));

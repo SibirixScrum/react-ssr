@@ -2,6 +2,7 @@ import React from "react";
 import {Link} from "react-router-dom";
 import {IsomorphicComponent} from "../isomorphic/component";
 import {isomorphicFetch, isServerPlatform} from "../isomorphic/fetch";
+import {HtmlHead} from "../isomorphic/html-head";
 import {ElementListComponent} from "./element-list";
 
 export class DetailComponent extends IsomorphicComponent {
@@ -27,6 +28,8 @@ export class DetailComponent extends IsomorphicComponent {
             }
 
             data.json().then((data) => {
+                HtmlHead.title = data.item.NAME;
+
                 return this.setState({
                     item: data.item,
                     loading: false,
