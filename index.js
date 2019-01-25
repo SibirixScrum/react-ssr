@@ -16,18 +16,14 @@ const serverRenderer = (req, res) => {
         if (err) {
             console.error(err);
             return res.status(500).send('An error occurred');
-        }
+        };
 
-        return res.send(data);
+        //return res.send(data);
         return res.send(
             data
                 .replace(
-                    '<div id="root"></div>',
-                    '<div id="root">' + serverRendererApp(req) + '</div>'
-                )
-                .replace(
-                    '<title></title>',
-                    `<title>${ServerState.getInstance().title}</title>`
+                    '<div id="root" class="flex-grow"></div>',
+                    '<div id="root" class="flex-grow">' + serverRendererApp(req) + '</div>'
                 )
         )
     })

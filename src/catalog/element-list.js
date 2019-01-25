@@ -59,6 +59,10 @@ export class ElementListComponent extends IsomorphicComponent {
 
         return isomorphicFetch(`http://olehouse.local/catalog-api/section/${this.getSectionCode()}/?PAGEN_1=${page}`)
             .then((data) => {
+                    if (!data.ok) {
+                        return;
+                    }
+
                     data.json().then((data) => {
                         return this.setState({
                             section: data.section,
@@ -71,7 +75,6 @@ export class ElementListComponent extends IsomorphicComponent {
     }
 
     render() {
-
         let title = '';
         if (this.state.section !== null) {
             title = (

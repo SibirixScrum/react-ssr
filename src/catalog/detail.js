@@ -22,6 +22,10 @@ export class DetailComponent extends IsomorphicComponent {
 
     componentDidMount() {
         isomorphicFetch(`http://olehouse.local/catalog-api/element/${this.getElementCode()}/`).then((data) => {
+            if (!data.ok) {
+                return;
+            }
+
             data.json().then((data) => {
                 return this.setState({
                     item: data.item,
@@ -128,7 +132,7 @@ export class DetailComponent extends IsomorphicComponent {
 
                                     {item.LABEL && item.LABEL.length > 0 ? (
                                         <div className="label-wrap">
-                                            {item.LABEL.map((el) => {
+                                            {item.LABEL.map((el, i) => {
                                                 const style = {};
 
                                                 if (el.PROPERTY_COLOR_VALUE) {
@@ -136,7 +140,7 @@ export class DetailComponent extends IsomorphicComponent {
                                                 }
 
                                                 return (
-                                                    <span className="label" style={style}>
+                                                    <span className="label" style={style} key={i}>
                                                         {el.NAME}
                                                     </span>
                                                 )
@@ -169,7 +173,7 @@ export class DetailComponent extends IsomorphicComponent {
                                                          data-url="/order/update" data-max="2" data-min="1" data-step="1">
                                                         <a href="javascript:void(0)" className="minus js-dec disabled" />
                                                         <input type="text" name="count" className="js-input-count js-val"
-                                                               value="1" inputMode="numeric" pattern="[0-9]*" maxLength="2" />
+                                                               defaultValue="1" inputMode="numeric" pattern="[0-9]*" maxLength="2" />
                                                         <a href="javascript:void(0)" className="plus js-inc" />
                                                     </div>
                                                 </div>
@@ -187,8 +191,8 @@ export class DetailComponent extends IsomorphicComponent {
                                     {item.ADVANTAGE && item.ADVANTAGE.length > 0 ? (
 
                                         <div className="advantage-list">
-                                            {item.ADVANTAGE.map((el) => {
-                                                return <div className="advantage-list-item">{el.NAME}</div>
+                                            {item.ADVANTAGE.map((el, i) => {
+                                                return <div className="advantage-list-item" key={i}>{el.NAME}</div>
                                             })}
                                         </div>
 
@@ -205,7 +209,7 @@ export class DetailComponent extends IsomorphicComponent {
                                                 }
 
                                                 return (
-                                                    <div className="info-list-item ">
+                                                    <div className="info-list-item" key={i}>
                                                         <div className={`info-list-item-header js-toggle-item ${i === 0 ? 'open' : ''}`}>
                                                             {item.TEXT_ACCORDION_DESCRIPTION[i]}<i />
                                                         </div>
