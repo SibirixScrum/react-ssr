@@ -1,5 +1,6 @@
 import React from "react";
 import {Link} from "react-router-dom";
+import {apiCatalog, assetsServer} from "../config";
 import {IsomorphicComponent} from "../isomorphic/component";
 import {isomorphicFetch, isServerPlatform} from "../isomorphic/fetch";
 import {HtmlHead} from "../isomorphic/html-head";
@@ -23,7 +24,7 @@ export class SectionListComponent extends IsomorphicComponent {
     }
 
     componentDidMount() {
-        isomorphicFetch('http://olehouse.local/catalog-api/').then((data) => {
+        isomorphicFetch(apiCatalog).then((data) => {
             if (!data.ok) {
                 return;
             }
@@ -87,7 +88,7 @@ export class SectionListComponent extends IsomorphicComponent {
                                                 </span>
                                                 {item.PICTURE_RESIZE ? (
                                                     <span className="slide-content-img">
-                                                        <img src={`http://olehouse.local/${item.PICTURE_RESIZE}`} alt="" />
+                                                        <img src={`${assetsServer}${item.PICTURE_RESIZE}`} alt="" />
                                                     </span>
                                                 ): ''}
                                             </span>

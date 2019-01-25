@@ -1,5 +1,6 @@
 import React from "react";
 import {Link} from "react-router-dom";
+import {apiCatalog, assetsServer} from "../config";
 import {IsomorphicComponent} from "../isomorphic/component";
 import {isomorphicFetch, isServerPlatform} from "../isomorphic/fetch";
 import {HtmlHead} from "../isomorphic/html-head";
@@ -22,7 +23,7 @@ export class DetailComponent extends IsomorphicComponent {
     }
 
     componentDidMount() {
-        isomorphicFetch(`http://olehouse.local/catalog-api/element/${this.getElementCode()}/`).then((data) => {
+        isomorphicFetch(`${apiCatalog}element/${this.getElementCode()}/`).then((data) => {
             if (!data.ok) {
                 return;
             }
@@ -97,7 +98,7 @@ export class DetailComponent extends IsomorphicComponent {
                                                     return (
                                                         <div className="slide js-slide" key={i}>
                                                             <div className="img-wrap">
-                                                                <img src={`http://olehouse.local${item.PICTURE}`} alt=""/>
+                                                                <img src={`${assetsServer}${item.PICTURE}`} alt=""/>
                                                             </div>
                                                         </div>
                                                     );
@@ -113,7 +114,7 @@ export class DetailComponent extends IsomorphicComponent {
                                                         <div className="slide js-slide" key={i}>
                                                             <div className="image-thumb"
                                                                  style={{
-                                                                     backgroundImage: `url(http://olehouse.local${item.PICTURE})`,
+                                                                     backgroundImage: `url(${assetsServer}${item.PICTURE})`,
                                                                      backgroundSize: 'contain',
                                                                      backgroundPosition: 'bottom center',
                                                                  }} />

@@ -6,13 +6,13 @@ import express from 'express';
 import {serverRenderer as serverRendererApp} from './src/server';
 import {template} from "./src/template";
 
-const PORT = 8080;
+const PORT = 80;
 const app = express();
 
 const router = express.Router();
 
 const serverRenderer = (req, res) => {
-    res.send(template(serverRendererApp(req)));
+    res.send(template(serverRendererApp(req), typeof req.query.rss === 'undefined'));
 };
 
 app.use('/build', express.static('build'));

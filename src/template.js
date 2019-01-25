@@ -1,6 +1,6 @@
 import {HtmlHead} from "./isomorphic/html-head";
 
-export function template(content) {
+export function template(content, client) {
     return (
         `<!DOCTYPE html>
         <html lang="en">
@@ -13,8 +13,7 @@ export function template(content) {
         </head>
         <body>
             <div id="root" class="flex-grow">${content}</div>
-        
-            <script src="/build/client.bundle.js"></script>
+            ${client ? `<script src="/build/client.bundle.js"></script>` : ''}
         </body>
         </html>`
     );

@@ -1,5 +1,6 @@
 import React from "react";
 import {Link} from "react-router-dom";
+import {apiCatalog, assetsServer} from "../config";
 import {IsomorphicComponent} from "../isomorphic/component";
 import {isBrowserPlatform, isomorphicFetch, isServerPlatform} from "../isomorphic/fetch";
 import {HtmlHead} from "../isomorphic/html-head";
@@ -63,7 +64,7 @@ export class ElementListComponent extends IsomorphicComponent {
             page = 1;
         }
 
-        isomorphicFetch(`http://olehouse.local/catalog-api/section/${this.getSectionCode()}/?PAGEN_1=${page}`)
+        isomorphicFetch(`${apiCatalog}section/${this.getSectionCode()}/?PAGEN_1=${page}`)
             .then((data) => {
                     if (!data.ok) {
                         return;
@@ -156,10 +157,10 @@ export class ElementListComponent extends IsomorphicComponent {
 
                 <Link to={`/${this.state.section.CODE}/${item.CODE}`} className="product-card">
                     <span className="img-wrap">
-                        <img src={`http://olehouse.local${item.PREVIEW_PICTURE_RESIZE}`} alt="" />
+                        <img src={`${assetsServer}${item.PREVIEW_PICTURE_RESIZE}`} alt="" />
 
                         {item.HOVER_PICTURE_RESIZE ? (
-                            <img src={`http://olehouse.local${item.HOVER_PICTURE_RESIZE}`} alt="" className="img-hover" />
+                            <img src={`${assetsServer}${item.HOVER_PICTURE_RESIZE}`} alt="" className="img-hover" />
                         ) : ''}
 
                     </span>
