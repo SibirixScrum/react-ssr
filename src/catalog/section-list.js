@@ -10,7 +10,8 @@ export class SectionListComponent extends IsomorphicComponent {
         super(props);
 
         this.state = {
-            items: null
+            items: null,
+            loading: true,
         };
 
         if (isServerPlatform()) {
@@ -29,6 +30,7 @@ export class SectionListComponent extends IsomorphicComponent {
             data.json().then((data) => {
                 return this.setState({
                     items: data.items,
+                    loading: false,
                 });
             });
         });
@@ -38,7 +40,15 @@ export class SectionListComponent extends IsomorphicComponent {
     render() {
 
         return (
-            <div className="catalog-page">
+            <div className={`catalog-page ajax-area  ${this.state.loading ? 'active' : ''}`} style={{minHeight: '100vh'}}>
+                <div className={`ajax-loader`}>
+                    <span />
+                    <span />
+                    <span />
+                    <span />
+                    <span />
+                </div>
+
                 <div className="container">
                     <div className="grid-row">
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 offset-content text-content-wrapper">
