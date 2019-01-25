@@ -27,7 +27,6 @@ export class SectionListComponent extends IsomorphicComponent {
     componentDidMount() {
         isomorphicFetch('http://olehouse.local/catalog-api/').then((data) => {
             data.json().then((data) => {
-                console.log(data);
                 return this.setState({
                     items: data.items,
                 });

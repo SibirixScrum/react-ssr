@@ -11,7 +11,9 @@ export class ElementListComponent extends IsomorphicComponent {
         super(props);
 
         this.state = {
+            section: null,
             items: null,
+            navParams: null,
         };
 
         if (isServerPlatform()) {
@@ -30,9 +32,19 @@ export class ElementListComponent extends IsomorphicComponent {
 
         if (isBrowserPlatform()) {
             this.props.history.listen((location) => {
-                this.setState({items: null});
+                this.setState({
+                    items: null,
+                    navParams: null,
+                });
                 this.loadPage(this.getPageNumber(location));
             });
+        }
+    }
+
+    componentWillUnmount() {
+
+        if (isBrowserPlatform()) {
+            this.props.history.unli
         }
     }
 
@@ -45,10 +57,15 @@ export class ElementListComponent extends IsomorphicComponent {
         return params.get('page');
     }
 
-    loadPage(page = 1) {
-        isomorphicFetch(`http://react-rss.api/catalog/section/${this.getSectionCode()}/?PAGEN_1=${page}`).then((data) => {
+    loadPage(page) {
+        if (!page) {
+            page = 1;
+        }
+
+        isomorphicFetch(`http://olehouse.local/catalog-api/section/${this.getSectionCode()}/?PAGEN_1=${page}`).then((data) => {
             data.json().then((data) => {
                 return this.setState({
+                    section: data.section,
                     items: data.items,
                     navParams: data.navParams
                 });
@@ -58,117 +75,122 @@ export class ElementListComponent extends IsomorphicComponent {
 
     render() {
 
-        return (
-            <div className="catalog-page">
+        let title = '';
+        if (this.state.section !== null) {
+            title = (
                 <div className="container">
                     <div className="grid-row">
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 offset-content text-content-wrapper">
                             <div className="text-content">
-                                <h1>CND Shellac</h1>
+                                <h1>{this.state.section.NAME}</h1>
                             </div>
                         </div>
                     </div>
                 </div>
+            );
+        }
 
+        let list = '';
+
+        if (this.state.items !== null) {
+            list = (
                 <div className="catalog-block">
                     <div className="catalog-content product-card-left-container">
                         <div className="container">
                             <div className="grid-row ">
-                                <div className="col-xs-12 col-sm-6 col-md-4 col-lg-3 flex-column">
-
-                                    <a href="javascript:void(0);" className="product-card">
-                                        <span className="img-wrap">
-                                            <img src="/assets/pictures/product-card/black.png" alt="" />
-
-                                                        <img src="/assets/pictures/product-card/hover-red.png" alt="" className="img-hover" />
-                                                </span>
-                                                                            <span className="info">
-                                            <span className="article">91153</span>
-                                            <span className="rating">
-                                                <i></i>
-                                                <i></i>
-                                                <i></i>
-                                                <i className="current"></i>
-                                                <i></i>
-                                            </span>
-                                            <span className="title">CND Shellac UV&nbsp;Base Coat</span>
-                                            <span className="text">Базовое покрытие, 13,6&nbsp;мл</span>
-                                        </span>
-
-                                                                            <span className="card-bottom">
-                                            <span className="prop-list">
-                                                <input type="radio" name="size-477837503" id="size-477837503" checked="" />
-                                                <label htmlFor="size-477837503">4.8 мл</label>
-                                                <input type="radio" name="size-477837503" id="size-477837504" />
-                                                <label htmlFor="size-477837504">7.3 мл</label>
-                                            </span>
-
-                                            <span className="catalog">
-                                                <span className="price">1&nbsp;380&nbsp;<i className="rub"></i></span>
-                                                <span className="buy">Купить</span>
-                                            </span>
-                                        </span>
-
-                                        <span className="fav "></span>
-                                    </a>
-                                </div>
-                                <div className="col-xs-12 col-sm-6 col-md-4 col-lg-3 flex-column">
-
-                                    <a href="javascript:void(0);" className="product-card">
-                                        <span className="img-wrap">
-                                            <img src="/assets/pictures/product-card/red.png" alt="" />
-
-                                                        <img src="/assets/pictures/product-card/hover-red.png" alt="" className="img-hover" />
-                                                </span>
-                                                                            <span className="info">
-                                            <span className="article">10585</span>
-                                            <span className="rating">
-                                                <i></i>
-                                                <i></i>
-                                                <i></i>
-                                                <i className="current"></i>
-                                                <i></i>
-                                            </span>
-                                            <span className="title">CND Shellac UV&nbsp;Color Coat</span>
-                                            <span className="text">13,6&nbsp;мл, 51&nbsp;оттенок</span>
-                                        </span>
-
-                                                                            <span className="card-bottom">
-                                            <span className="prop-list">
-                                                <input type="radio" name="size-82437763" id="size-82437763" checked="" />
-                                                <label htmlFor="size-82437763">4.8 мл</label>
-                                                <input type="radio" name="size-82437763" id="size-82437764" />
-                                                <label htmlFor="size-82437764">7.3 мл</label>
-                                            </span>
-
-                                            <span className="catalog">
-                                                <span className="price">1&nbsp;264&nbsp;<i className="rub"></i></span>
-                                                <span className="buy">Купить</span>
-                                            </span>
-                                        </span>
-
-                                        <span className="fav "></span>
-                                    </a>
-                                </div>
+                                {this.state.items.map((item, i) => {
+                                    return this.renderCard(item, i)
+                                })}
                             </div>
                         </div>
                     </div>
 
                 </div>
+            );
+        }
 
+        let paginator = '';
+        if (this.state.navParams !== null) {
+            paginator = (
                 <div className="pagination-wrapper">
-                    <div className="pagination">
-                        <a href="javascript:void(0);" className="arrow prev"></a>
-                        <a href="javascript:void(0);" className="item">1</a>
-                        <a href="javascript:void(0);" className="item active">2</a>
-                        <a href="javascript:void(0);" className="item">3</a>
-                        <a href="javascript:void(0);" className="arrow next"></a>
-                    </div>
-                    <a href="javascript:void(0);" className="pagination-show-all">Показать все</a>
-
+                    <PaginatorComponent
+                        path={this.props.location.pathname}
+                        totalCount={this.state.navParams.totalCount}
+                        size={this.state.navParams.size}
+                        current={this.state.navParams.page} />
                 </div>
+            );
+        }
+
+        return (
+            <div className="catalog-page">
+
+                {title}
+
+                {list}
+
+                {paginator}
 
             </div>
+        )
+    }
+
+    renderCard(item, i) {
+        return (
+            <div className="col-xs-12 col-sm-6 col-md-4 col-lg-3 flex-column" key={i}>
+
+                <Link to={`/${this.state.section.CODE}/${item.CODE}`} className="product-card">
+                    <span className="img-wrap">
+                        <img src={`http://olehouse.local${item.PREVIEW_PICTURE_RESIZE}`} alt="" />
+
+                        {item.HOVER_PICTURE_RESIZE ? (
+                            <img src={`http://olehouse.local${item.HOVER_PICTURE_RESIZE}`} alt="" className="img-hover" />
+                        ) : ''}
+
+                    </span>
+                    <span className="info">
+                        {item.SELECTED_DATA && item.SELECTED_DATA.ARTICLE ? (
+                            <span className="article">{item.SELECTED_DATA.ARTICLE}</span>
+                        ) : ''}
+
+                        {item.PROPERTIES.RATING_REVIEW.VALUE
+                            ? ElementListComponent.renderRating(item.PROPERTIES.RATING_REVIEW.VALUE)
+                            : ''
+                        }
+
+                        <span className="title">{item.Name}</span>
+
+                        {item.COLOR && item.COLOR.NAME ? (
+                            <span className="text">{item.COLOR.NAME}</span>
+                        ) : ''}
+                    </span>
+
+                    <span className="card-bottom">
+                        <span className="catalog">
+                            <span className="price" dangerouslySetInnerHTML={{__html: item.PRICE.price}} />
+                            <span className="buy">Купить</span>
+                        </span>
+                    </span>
+
+                    <span className="fav " />
+                </Link>
+            </div>
+        );
+    }
+
+    static renderRating(value) {
+        let result = '';
+        
+        for (let i = 1; i <=5 ; i++) {
+            if (i === parseInt(value, 10)) {
+                result += '<i className="current"></i>';
+            } else {
+                result += '<i></i>';
+            }
+        }
+
+        return (
+            <span className="rating" dangerouslySetInnerHTML={{__html: result}} />
         )
     }
 }

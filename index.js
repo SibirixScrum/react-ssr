@@ -35,6 +35,7 @@ const serverRenderer = (req, res) => {
 
 app.use('/build', express.static('build'));
 app.use('/assets', express.static('assets'));
+app.use('/images', express.static('images'));
 
 router.use('**', serverRenderer);
 
