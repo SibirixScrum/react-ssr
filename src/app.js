@@ -10,7 +10,7 @@ export class App extends IsomorphicComponent {
 
     render() {
         const routes = (
-            <main id="main">
+            <main id="main" style={{padding: 0}}>
                 <Route path={'/'} exact component={SectionListComponent} />
                 <Route path={'/:sectionCode'} exact component={ElementListComponent} />
                 <Route path={'/:sectionCode/:elementCode'} exact component={DetailComponent} />

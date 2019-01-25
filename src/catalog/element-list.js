@@ -41,13 +41,6 @@ export class ElementListComponent extends IsomorphicComponent {
         }
     }
 
-    componentWillUnmount() {
-
-        if (isBrowserPlatform()) {
-            this.props.history.unli
-        }
-    }
-
     getSectionCode() {
         return this.props.match.params.sectionCode;
     }
@@ -112,7 +105,7 @@ export class ElementListComponent extends IsomorphicComponent {
         let paginator = '';
         if (this.state.navParams !== null) {
             paginator = (
-                <div className="pagination-wrapper">
+                <div className="pagination-wrapper" style={{paddingBottom: 60}}>
                     <PaginatorComponent
                         path={this.props.location.pathname}
                         totalCount={this.state.navParams.totalCount}
