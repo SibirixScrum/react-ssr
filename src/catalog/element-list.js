@@ -14,6 +14,7 @@ export class ElementListComponent extends IsomorphicComponent {
             section: null,
             items: null,
             navParams: null,
+            loading: true,
         };
 
         if (isServerPlatform()) {
@@ -35,6 +36,7 @@ export class ElementListComponent extends IsomorphicComponent {
                 this.setState({
                     items: null,
                     navParams: null,
+                    loading: true,
                 });
                 this.loadPage(this.getPageNumber(location));
             });
@@ -55,15 +57,17 @@ export class ElementListComponent extends IsomorphicComponent {
             page = 1;
         }
 
-        isomorphicFetch(`http://olehouse.local/catalog-api/section/${this.getSectionCode()}/?PAGEN_1=${page}`).then((data) => {
-            data.json().then((data) => {
-                return this.setState({
-                    section: data.section,
-                    items: data.items,
-                    navParams: data.navParams
+        return isomorphicFetch(`http://olehouse.local/catalog-api/section/${this.getSectionCode()}/?PAGEN_1=${page}`)
+            .then((data) => {
+                    data.json().then((data) => {
+                        return this.setState({
+                            section: data.section,
+                            items: data.items,
+                            navParams: data.navParams,
+                            loading: false,
+                        });
+                    });
                 });
-            });
-        });
     }
 
     render() {
@@ -116,7 +120,14 @@ export class ElementListComponent extends IsomorphicComponent {
         }
 
         return (
-            <div className="catalog-page">
+            <div className={`catalog-page ajax-area  ${this.state.loading ? 'active' : ''}`} style={{minHeight: '100vh'}}>
+                <div className={`ajax-loader`}>
+                    <span />
+                    <span />
+                    <span />
+                    <span />
+                    <span />
+                </div>
 
                 {title}
 
