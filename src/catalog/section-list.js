@@ -1,15 +1,17 @@
 import React from "react";
 import {Link} from "react-router-dom";
 import {apiCatalog, assetsServer} from "../config";
+import {DataContext} from "../contexts";
 import {IsomorphicComponent} from "../isomorphic/component";
 import {isomorphicFetch, isServerPlatform} from "../isomorphic/fetch";
-import {HtmlHead} from "../isomorphic/html-head";
 
 
 export class SectionListComponent extends IsomorphicComponent {
 
-    constructor(props) {
-        super(props);
+    static contextType = DataContext;
+
+    constructor(props, context) {
+        super(props, context);
 
         this.state = {
             items: null,
@@ -20,22 +22,41 @@ export class SectionListComponent extends IsomorphicComponent {
             this.componentDidMount();
         }
 
-        HtmlHead.title = 'Каталог';
+        const htmlHead = context.htmlHead;
+        htmlHead.title = 'Каталог';
     }
 
     componentDidMount() {
-        isomorphicFetch(apiCatalog).then((data) => {
-            if (!data.ok) {
-                return;
-            }
+        const transferState = this.context.transferState;
+        const url = apiCatalog;
+        const transferKey = 'catalog-sections';
 
-            data.json().then((data) => {
-                return this.setState({
-                    items: data.items,
-                    loading: false,
+        if (!transferState.has(transferKey)) {
+            isomorphicFetch(url).then((data) => {
+                if (!data.ok) {
+                    return;
+                }
+
+                data.json().then((data) => {
+                    if (isServerPlatform()) {
+                        transferState.set(transferKey, data);
+                    }
+
+                    this.setState({
+                        items: data.items,
+                        loading: false,
+                    });
                 });
             });
-        });
+        } else {
+            const data = transferState.get(transferKey);
+            transferState.remove(transferKey);
+
+            this.setState({
+                items: data.items,
+                loading: false,
+            });
+        }
 
     }
 

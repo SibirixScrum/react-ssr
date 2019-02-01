@@ -1,25 +1,25 @@
 import {isBrowserPlatform, isServerPlatform} from "./fetch";
 
 export class HtmlHead {
-    static get title() {
+    get title() {
         if (isBrowserPlatform()) {
             return document.title;
         }
 
         if (isServerPlatform()) {
-            return HtmlHead._title;
+            return this._title;
         }
 
         return '';
     }
 
-    static set title(value) {
+    set title(value) {
         if (isBrowserPlatform()) {
             document.title = value;
         }
 
         if (isServerPlatform()) {
-            HtmlHead._title = value;
+            this._title = value;
         }
     }
 }

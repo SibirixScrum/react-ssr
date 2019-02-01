@@ -1,16 +1,17 @@
 import React from "react";
 import {Link} from "react-router-dom";
 import {apiCatalog, assetsServer} from "../config";
+import {DataContext} from "../contexts";
 import {IsomorphicComponent} from "../isomorphic/component";
 import {isomorphicFetch, isServerPlatform} from "../isomorphic/fetch";
-import {HtmlHead} from "../isomorphic/html-head";
 import {ElementListComponent} from "./element-list";
 
 export class DetailComponent extends IsomorphicComponent {
 
+    static contextType = DataContext;
 
-    constructor(props) {
-        super(props);
+    constructor(props, context) {
+        super(props, context);
 
         this.state = {
             item: null,
@@ -23,20 +24,39 @@ export class DetailComponent extends IsomorphicComponent {
     }
 
     componentDidMount() {
-        isomorphicFetch(`${apiCatalog}element/${this.getElementCode()}/`).then((data) => {
-            if (!data.ok) {
-                return;
-            }
+        const transferState = this.context.transferState;
+        const htmlHead = this.context.htmlHead;
+        const url = `${apiCatalog}element/${this.getElementCode()}/`;
+        const transferKey = 'element-' + this.getElementCode();
 
-            data.json().then((data) => {
-                HtmlHead.title = data.item.NAME;
+        if (!transferState.has(transferKey)) {
+            isomorphicFetch(url).then((data) => {
+                if (!data.ok) {
+                    return;
+                }
 
-                return this.setState({
-                    item: data.item,
-                    loading: false,
+                data.json().then((data) => {
+                    htmlHead.title = data.item.NAME;
+
+                    if (isServerPlatform()) {
+                        transferState.set(transferKey, data);
+                    }
+
+                    this.setState({
+                        item: data.item,
+                        loading: false,
+                    });
                 });
             });
-        });
+        } else {
+            const data = transferState.get(transferKey);
+            transferState.remove(transferKey);
+
+            this.setState({
+                item: data.item,
+                loading: false,
+            });
+        }
     }
 
     getSectionCode() {

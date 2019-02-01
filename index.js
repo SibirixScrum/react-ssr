@@ -3,16 +3,15 @@ import path from 'path';
 
 import express from 'express';
 
-import {serverRenderer as serverRendererApp} from './src/server';
 import {template} from "./src/template";
 
-const PORT = 80;
+const PORT = 3000;
 const app = express();
 
 const router = express.Router();
 
 const serverRenderer = (req, res) => {
-    res.send(template(serverRendererApp(req), typeof req.query.rss === 'undefined'));
+    res.send(template(req, typeof req.query.rss === 'undefined'));
 };
 
 app.use('/build', express.static('build'));
@@ -29,6 +28,6 @@ router.use(
 app.use(router);
 
 // app.use(express.static('./build'))
-app.listen(PORT, () => {
+app.listen(PORT, '192.168.0.153', () => {
     console.log(`SSR running on port ${PORT}`)
 });

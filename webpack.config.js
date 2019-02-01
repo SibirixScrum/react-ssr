@@ -9,6 +9,9 @@ const config = {
                 exclude: /node_modules/,
                 loader: "babel-loader",
                 query: {
+                    plugins: [
+                        '@babel/plugin-proposal-class-properties'
+                    ],
                     presets: [
                         '@babel/react'
                     ]

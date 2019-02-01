@@ -1,15 +1,17 @@
 import React from "react";
 import {Link} from "react-router-dom";
 import {apiCatalog, assetsServer} from "../config";
+import {DataContext} from "../contexts";
 import {IsomorphicComponent} from "../isomorphic/component";
 import {isBrowserPlatform, isomorphicFetch, isServerPlatform} from "../isomorphic/fetch";
-import {HtmlHead} from "../isomorphic/html-head";
 import {PaginatorComponent} from "./paginator";
 
 export class ElementListComponent extends IsomorphicComponent {
 
-    constructor(props) {
-        super(props);
+    static contextType = DataContext;
+
+    constructor(props, context) {
+        super(props, context);
 
         this.state = {
             section: null,
@@ -64,14 +66,24 @@ export class ElementListComponent extends IsomorphicComponent {
             page = 1;
         }
 
-        isomorphicFetch(`${apiCatalog}section/${this.getSectionCode()}/?PAGEN_1=${page}`)
-            .then((data) => {
+        const transferState = this.context.transferState;
+        const htmlHead = this.context.htmlHead;
+        const url = `${apiCatalog}section/${this.getSectionCode()}/?PAGEN_1=${page}`;
+        const transferKey = 'section-' + this.getSectionCode() + '.' + page;
+
+        if (!transferState.has(transferKey)) {
+            isomorphicFetch(url)
+                .then((data) => {
                     if (!data.ok) {
                         return;
                     }
 
                     data.json().then((data) => {
-                        HtmlHead.title = data.section.NAME;
+                        htmlHead.title = data.section.NAME;
+
+                        if (isServerPlatform()) {
+                            transferState.set(transferKey, data);
+                        }
 
                         return this.setState({
                             section: data.section,
@@ -81,6 +93,18 @@ export class ElementListComponent extends IsomorphicComponent {
                         });
                     });
                 });
+        } else {
+            const data = transferState.get(transferKey);
+            transferState.remove(transferKey);
+
+            this.setState({
+                section: data.section,
+                items: data.items,
+                navParams: data.navParams,
+                loading: false,
+            });
+        }
+
     }
 
     render() {
@@ -199,7 +223,7 @@ export class ElementListComponent extends IsomorphicComponent {
         
         for (let i = 1; i <=5 ; i++) {
             if (i === parseInt(value, 10)) {
-                result += '<i className="current"></i>';
+                result += '<i class="current"></i>';
             } else {
                 result += '<i></i>';
             }
