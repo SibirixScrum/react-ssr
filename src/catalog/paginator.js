@@ -43,6 +43,10 @@ export class PaginatorComponent extends React.Component {
             end = pageCount;
         }
 
+        if (start <= 0) {
+            start = 1;
+        }
+
         const pages = [];
         for (let i = start; i <= end; i++) {
             pages.push({
